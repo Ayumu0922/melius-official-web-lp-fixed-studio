@@ -34,6 +34,7 @@ interface WorkCardProps extends AnchorHTMLAttributes<HTMLAnchorElement>, UiIdPro
   alt: string;
   title: string;
   year: string;
+  meta: string;
 }
 
 interface FieldProps extends InputHTMLAttributes<HTMLInputElement>, UiIdProps {
@@ -70,7 +71,7 @@ export function SidebarShell({ children, ...props }: HTMLAttributes<HTMLElement>
   return (
     <aside
       {...props}
-      className="w-full bg-[#f3f3f1] px-6 py-7 text-[#0f0f12] dark:bg-[#19191d] dark:text-[#f5f5f2] md:fixed md:left-0 md:top-0 md:z-20 md:flex md:h-screen md:w-[40%] md:flex-col md:justify-between md:px-9 md:py-9 lg:w-[30%]"
+      className="w-full bg-[#f3f3f1] px-6 py-7 text-[#0f0f12] dark:bg-[#19191d] dark:text-[#f5f5f2] md:fixed md:left-0 md:top-0 md:z-20 md:flex md:h-screen md:w-[38%] md:flex-col md:justify-between md:px-9 md:py-9 lg:w-[32%]"
     >
       {children}
     </aside>
@@ -81,7 +82,7 @@ export function MainColumn({ children, ...props }: HTMLAttributes<HTMLElement> &
   return (
     <section
       {...props}
-      className="min-h-screen bg-[#fafafa] px-6 py-6 dark:bg-[#111114] md:ml-[40%] md:w-[60%] md:px-8 md:py-8 lg:ml-[30%] lg:w-[70%]"
+      className="min-h-screen bg-[#fafafa] px-5 py-5 dark:bg-[#111114] md:ml-[38%] md:w-[62%] md:px-7 md:py-7 lg:ml-[32%] lg:w-[68%]"
     >
       {children}
     </section>
@@ -92,7 +93,7 @@ export function DividerLine() {
   return (
     <div
       aria-hidden="true"
-      className="hidden md:block fixed left-[40%] top-0 bottom-0 z-30 w-px bg-[repeating-linear-gradient(180deg,#d0d0d0_0,#d0d0d0_8px,transparent_8px,transparent_16px)] dark:bg-[repeating-linear-gradient(180deg,#3a3a40_0,#3a3a40_8px,transparent_8px,transparent_16px)] lg:left-[30%]"
+      className="hidden md:block fixed left-[38%] top-0 bottom-0 z-30 w-px bg-[repeating-linear-gradient(180deg,#d0d0d0_0,#d0d0d0_8px,transparent_8px,transparent_16px)] dark:bg-[repeating-linear-gradient(180deg,#3a3a40_0,#3a3a40_8px,transparent_8px,transparent_16px)] lg:left-[32%]"
     />
   );
 }
@@ -176,7 +177,45 @@ export function ControlButton({ uiId, children, ...props }: ControlButtonProps &
   );
 }
 
-export function WorkCard({ uiId, imageUiId, image, alt, title, year, ...props }: WorkCardProps) {
+export function FeatureWorkCard({ uiId, imageUiId, image, alt, title, year, meta, ...props }: WorkCardProps) {
+  return (
+    <a
+      {...props}
+      data-melius-ui-id={uiId}
+      data-melius-ui-role="card"
+      className="work-card group grid overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-[#1a1a1f] lg:grid-cols-[1.58fr_0.72fr]"
+    >
+      <div className="relative overflow-hidden">
+        <img
+          data-melius-ui-id={imageUiId}
+          data-melius-ui-role="image"
+          src={image}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          className="aspect-[4/3] w-full object-cover transition duration-700 ease-out group-hover:scale-[1.035] lg:min-h-[560px]"
+        />
+        <div className="absolute inset-0 bg-[#0f0f12]/[0.06] opacity-0 transition duration-500 group-hover:opacity-100 dark:bg-white/[0.06]" />
+      </div>
+      <div className="flex min-h-[190px] flex-col justify-between border-t border-black/[0.06] p-5 dark:border-white/[0.08] lg:border-l lg:border-t-0 lg:p-7">
+        <div>
+          <p className="text-[11px] font-bold uppercase leading-none text-[#858585] dark:text-[#9f9f9a]">{meta}</p>
+          <h2 className="mt-4 text-[28px] font-semibold leading-[32px] text-[#0f0f12] dark:text-[#f5f5f2] md:text-[34px] md:leading-[38px]">
+            {title}
+          </h2>
+        </div>
+        <div className="mt-8 flex items-center justify-between text-[13px] font-semibold uppercase leading-none text-[#595959] dark:text-[#c8c8c1]">
+          <span>{year}</span>
+          <span aria-hidden="true" className="transition group-hover:-rotate-45">
+            {'->'}
+          </span>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+export function WorkCard({ uiId, imageUiId, image, alt, title, year, meta, ...props }: WorkCardProps) {
   return (
     <a
       {...props}
@@ -194,11 +233,16 @@ export function WorkCard({ uiId, imageUiId, image, alt, title, year, ...props }:
           decoding="async"
           className="aspect-[4/3] w-full object-cover transition duration-700 ease-out group-hover:scale-[1.045]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#191775] via-[#191775]/[0.40] to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 text-white opacity-0 transition duration-500 group-hover:opacity-100 md:p-8">
-          <span className="text-[21px] font-medium leading-[26px] md:text-[26px] md:leading-[31px]">{title}</span>
-          <span className="text-[20px] font-light leading-none md:text-[25px]">{year}</span>
+        <div className="absolute inset-0 bg-[#191775]/[0.18] opacity-0 transition duration-500 group-hover:opacity-100" />
+      </div>
+      <div className="flex min-h-[92px] items-end justify-between gap-4 border-t border-black/[0.06] p-4 dark:border-white/[0.08]">
+        <div>
+          <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#9f9f9a]">{meta}</p>
+          <h2 className="mt-2 text-[18px] font-semibold leading-[23px] text-[#0f0f12] dark:text-[#f5f5f2] md:text-[20px] md:leading-[25px]">
+            {title}
+          </h2>
         </div>
+        <span className="shrink-0 text-[13px] font-semibold leading-none text-[#595959] dark:text-[#c8c8c1]">{year}</span>
       </div>
     </a>
   );

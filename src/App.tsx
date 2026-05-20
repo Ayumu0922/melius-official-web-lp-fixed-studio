@@ -4,6 +4,7 @@ import {
   ButtonLink,
   ControlButton,
   DividerLine,
+  FeatureWorkCard,
   FormField,
   FormSelect,
   FormTextarea,
@@ -24,6 +25,7 @@ type ThemeMode = 'light' | 'dark';
 interface Project {
   id: string;
   title: Record<Locale, string>;
+  meta: Record<Locale, string>;
   year: string;
   image: string;
   alt: Record<Locale, string>;
@@ -39,6 +41,10 @@ const projects: Project[] = [
       en: 'Baseline Systems',
       ja: 'Baseline Systems',
     },
+    meta: {
+      en: 'Brand system / Web',
+      ja: 'ブランド / Web',
+    },
     year: '2026',
     image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -51,6 +57,10 @@ const projects: Project[] = [
     title: {
       en: 'Orbit Product',
       ja: 'Orbit Product',
+    },
+    meta: {
+      en: 'Product UI',
+      ja: 'プロダクトUI',
     },
     year: '2025',
     image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=84',
@@ -65,6 +75,10 @@ const projects: Project[] = [
       en: 'Luma Identity',
       ja: 'Luma Identity',
     },
+    meta: {
+      en: 'Identity / Launch',
+      ja: 'ID / ローンチ',
+    },
     year: '2025',
     image: 'https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -78,6 +92,10 @@ const projects: Project[] = [
       en: 'Northline Web',
       ja: 'Northline Web',
     },
+    meta: {
+      en: 'Web direction',
+      ja: 'Webディレクション',
+    },
     year: '2024',
     image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -90,6 +108,10 @@ const projects: Project[] = [
     title: {
       en: 'Field App',
       ja: 'Field App',
+    },
+    meta: {
+      en: 'Mobile concept',
+      ja: 'モバイル構想',
     },
     year: '2024',
     image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=84',
@@ -115,6 +137,8 @@ const copy = {
       'This template keeps the original fixed-sidebar rhythm while replacing brand, imagery, and copy with editable sample content.',
     close: 'Close',
     trusted: 'Trusted by product-led teams.',
+    workKicker: 'Selected Work',
+    workNote: '01 / 05',
     testimonial: [
       {
         quote:
@@ -177,6 +201,8 @@ const copy = {
       'このテンプレートは参照元の固定サイドバー構成を保ちつつ、ブランド、画像、文言を編集しやすいサンプル内容に置き換えています。',
     close: '閉じる',
     trusted: 'プロダクト主導のチームに選ばれています。',
+    workKicker: 'Selected Work',
+    workNote: '01 / 05',
     testimonial: [
       {
         quote: 'プロダクトの物語が明確になり、プラットフォームの品質に見合うサイトへ整いました。',
@@ -451,6 +477,8 @@ export default function App() {
 
   const t = copy[locale];
   const testimonial = t.testimonial[testimonialIndex];
+  const featuredProject = projects[0];
+  const supportingProjects = projects.slice(1);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -593,22 +621,50 @@ export default function App() {
       <DividerLine />
 
       <MainColumn data-melius-ui-id="work-column">
-        <div data-melius-ui-id="project-gallery" className="mx-auto grid max-w-[1200px] gap-6">
-          {projects.map((project) => (
-            <WorkCard
-              key={project.id}
-              uiId={project.id}
-              imageUiId={`${project.id}-image`}
+        <div className="mx-auto max-w-[1240px]">
+          <div
+            data-melius-ui-id="work-index-header"
+            className="mb-5 flex items-end justify-between gap-4 border-b border-black/[0.08] pb-4 dark:border-white/[0.10]"
+          >
+            <p className="text-[12px] font-bold uppercase leading-none text-[#595959] dark:text-[#b7b7b2]">
+              {t.workKicker}
+            </p>
+            <p className="text-[12px] font-bold uppercase leading-none text-[#858585] dark:text-[#90908b]">
+              {t.workNote}
+            </p>
+          </div>
+
+          <div data-melius-ui-id="project-gallery" className="grid gap-6">
+            <FeatureWorkCard
+              uiId={featuredProject.id}
+              imageUiId={`${featuredProject.id}-image`}
               href="#contact"
-              image={project.image}
-              alt={project.alt[locale]}
-              title={project.title[locale]}
-              year={project.year}
+              image={featuredProject.image}
+              alt={featuredProject.alt[locale]}
+              title={featuredProject.title[locale]}
+              meta={featuredProject.meta[locale]}
+              year={featuredProject.year}
             />
-          ))}
+
+            <div data-melius-ui-id="supporting-project-grid" className="grid gap-6 sm:grid-cols-2">
+              {supportingProjects.map((project) => (
+                <WorkCard
+                  key={project.id}
+                  uiId={project.id}
+                  imageUiId={`${project.id}-image`}
+                  href="#contact"
+                  image={project.image}
+                  alt={project.alt[locale]}
+                  title={project.title[locale]}
+                  meta={project.meta[locale]}
+                  year={project.year}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="mx-auto mt-20 max-w-[1200px] md:mt-24">
+        <div className="mx-auto mt-20 max-w-[960px] md:mt-24">
           <ContactForm locale={locale} />
 
           <div
