@@ -80,10 +80,10 @@ const projects: Project[] = [
       ja: 'ID / ローンチ',
     },
     year: '2025',
-    image: 'https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=1200&q=84',
+    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=84',
     alt: {
-      en: 'A desk with interface work shown on multiple screens',
-      ja: '複数画面にUI作業が映るデスク',
+      en: 'A neutral creative studio table with chairs and natural light',
+      ja: '自然光が入る中立的なスタジオテーブル',
     },
   },
   {
