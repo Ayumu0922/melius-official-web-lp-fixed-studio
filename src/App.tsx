@@ -251,12 +251,12 @@ const copy = {
 };
 
 const companies = [
-  { label: 'EUPH', name: 'Euphoria' },
-  { label: 'FOCAL', name: 'Focal Point' },
-  { label: '45', name: '45 Degrees' },
-  { label: 'CORE', name: 'CoreOS' },
-  { label: 'TAX', name: 'EasyTax' },
-  { label: 'EPIC', name: 'Epicurious' },
+  { label: 'NORTH', name: 'North Pier' },
+  { label: 'LAYER', name: 'Layerworks' },
+  { label: '45', name: 'Studio 45' },
+  { label: 'SIGNAL', name: 'Signal Yard' },
+  { label: 'LEDGER', name: 'Clear Ledger' },
+  { label: 'KITE', name: 'Kiteframe' },
 ];
 
 function getPreviewParam(keys: string[]) {
