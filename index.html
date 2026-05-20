@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="A Melius UI-only fixed-sidebar design studio portfolio template with bilingual copy, theme switching, work cards, ticker proof, testimonials, and a presentational contact form."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f4f4f1'/%3E%3Cpath d='M8 22V8h4.2l3.8 6.4L19.8 8H24v14h-3.5v-8.5L17.2 19h-2.4l-3.3-5.5V22H8Z' fill='%230f0f12'/%3E%3C/svg%3E" />
+    <script>
+      (function () {
+        try {
+          var themeKey = 'melius-official-web-lp-fixed-studio-theme';
+          var localeKey = 'melius-official-web-lp-fixed-studio-locale';
+          var params = new URLSearchParams(window.location.search);
+          var requestedLocale = params.get('locale') || params.get('lang') || params.get('language') || params.get('melius_locale');
+          var requestedTheme = params.get('theme') || params.get('themeMode') || params.get('colorScheme') || params.get('melius_theme');
+          var locale = requestedLocale === 'ja' || requestedLocale === 'en' ? requestedLocale : localStorage.getItem(localeKey);
+          var stored = requestedTheme === 'light' || requestedTheme === 'dark' || requestedTheme === 'system' ? requestedTheme : localStorage.getItem(themeKey);
+          var preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolved = preference === 'system' ? (systemDark ? 'dark' : 'light') : preference;
+          document.documentElement.lang = locale === 'ja' ? 'ja' : 'en';
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.dataset.themePreference = preference;
+          document.documentElement.classList.toggle('dark', resolved === 'dark');
+          document.documentElement.style.colorScheme = resolved;
+        } catch (error) {
+          document.documentElement.lang = 'en';
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      })();
+    </script>
+    <title>Harbor Studio Portfolio Template</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
