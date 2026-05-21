@@ -93,7 +93,7 @@ html[data-theme="dark"] ::selection {
   }
 }
 
-@keyframes projectGalleryOld {
+@keyframes projectViewOld {
   from {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -105,7 +105,7 @@ html[data-theme="dark"] ::selection {
   }
 }
 
-@keyframes projectGalleryNew {
+@keyframes projectViewNew {
   from {
     opacity: 0.9;
     transform: translateY(10px) scale(0.997);
@@ -117,34 +117,6 @@ html[data-theme="dark"] ::selection {
   }
 }
 
-@keyframes caseDetailIn {
-  from {
-    opacity: 0;
-    grid-template-rows: 0fr;
-    transform: translateY(10px) scale(0.992);
-  }
-
-  to {
-    opacity: 1;
-    grid-template-rows: 1fr;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes caseDetailOut {
-  from {
-    opacity: 1;
-    grid-template-rows: 1fr;
-    transform: translateY(0);
-  }
-
-  to {
-    opacity: 0;
-    grid-template-rows: 0fr;
-    transform: translateY(8px) scale(0.994);
-  }
-}
-
 .animate-fade-up {
   animation: fadeUp 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -153,29 +125,21 @@ html[data-theme="dark"] ::selection {
   animation: softFloat 4.8s ease-in-out infinite alternate;
 }
 
-[data-melius-ui-id="project-gallery"] {
-  view-transition-name: project-gallery;
+[data-melius-ui-id="project-view"] {
+  view-transition-name: project-view;
 }
 
-::view-transition-old(project-gallery) {
-  animation: projectGalleryOld 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+::view-transition-old(project-view) {
+  animation: projectViewOld 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-::view-transition-new(project-gallery) {
-  animation: projectGalleryNew 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+::view-transition-new(project-view) {
+  animation: projectViewNew 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.case-detail-shell {
-  display: grid;
-  overflow: hidden;
-}
-
-.animate-case-detail-in {
-  animation: caseDetailIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-case-detail-out {
-  animation: caseDetailOut 0.32s cubic-bezier(0.4, 0, 1, 1) both;
+.work-index-view,
+.project-detail-view {
+  animation: projectViewNew 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .ticker-track {

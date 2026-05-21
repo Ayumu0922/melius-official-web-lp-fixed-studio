@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import type { FormEvent, MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import {
   ButtonLink,
@@ -35,7 +35,6 @@ interface Project {
 
 const localeStorageKey = 'melius-official-web-lp-fixed-studio-locale';
 const themeStorageKey = 'melius-official-web-lp-fixed-studio-theme';
-const projectDetailAnimationMs = 320;
 
 function runProjectViewTransition(update: () => void) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -530,22 +529,18 @@ function ContactForm({ locale }: { locale: Locale }) {
   );
 }
 
-function ProjectDetail({
+function ProjectDetailView({
   locale,
   project,
-  isClosing,
   onClose,
+  onContact,
 }: {
   locale: Locale;
-  project: Project | null;
-  isClosing: boolean;
+  project: Project;
   onClose: () => void;
+  onContact: (event: MouseEvent<HTMLAnchorElement>) => void;
 }) {
   const t = copy[locale].projectPanel;
-
-  if (!project) {
-    return null;
-  }
 
   return (
     <section
@@ -553,83 +548,80 @@ function ProjectDetail({
       data-melius-ui-id="project-detail-panel"
       role="region"
       aria-labelledby="project-detail-title"
-      data-state={isClosing ? 'closing' : 'open'}
-      className="case-detail-shell data-[state=closing]:animate-case-detail-out data-[state=open]:animate-case-detail-in"
+      className="project-detail-view min-h-[calc(100vh-40px)] text-[#0f0f12] dark:text-[#f5f5f2]"
     >
-      <div className="min-h-0 overflow-hidden">
-        <div className="grid overflow-hidden border-y border-black/[0.10] bg-[#f2f2ef] text-[#0f0f12] dark:border-white/[0.12] dark:bg-[#17171b] dark:text-[#f5f5f2] lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative min-h-[240px] overflow-hidden bg-[#e7e7e2] dark:bg-[#222229]">
-            <img
-              data-melius-ui-id="project-detail-image"
-              data-melius-ui-role="image"
-              src={project.image}
-              alt={project.alt[locale]}
-              className="h-full min-h-[240px] w-full object-cover lg:min-h-[480px]"
-            />
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/[0.46] to-transparent px-5 pb-5 pt-16 text-white">
-              <span className="text-[11px] font-bold uppercase leading-none">{project.meta[locale]}</span>
-              <span className="text-[11px] font-bold uppercase leading-none">{project.year}</span>
-            </div>
-          </div>
-          <div className="flex flex-col justify-between gap-10 p-5 sm:p-7 lg:p-9">
-            <div>
-              <div className="flex items-center justify-between gap-4 border-b border-black/[0.08] pb-5 dark:border-white/[0.10]">
-                <p className="text-[11px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
-                  {t.eyebrow}
-                </p>
-                <button
-                  data-melius-ui-id="project-detail-close"
-                  data-melius-ui-role="button"
-                  type="button"
-                  onClick={onClose}
-                  className="h-9 rounded-full border border-black/[0.12] px-4 text-[11px] font-bold uppercase leading-none transition hover:bg-black/[0.04] active:scale-[0.96] dark:border-white/[0.16] dark:hover:bg-white/[0.08]"
-                >
-                  {t.close}
-                </button>
-              </div>
-              <h2
-                id="project-detail-title"
-                data-melius-ui-id="project-detail-title"
-                className="mt-8 max-w-[620px] text-[34px] font-semibold leading-[38px] md:text-[46px] md:leading-[50px]"
-              >
-                {project.title[locale]}
-              </h2>
-              <p
-                data-melius-ui-id="project-detail-summary"
-                className="mt-5 max-w-[620px] text-[16px] leading-[24px] text-[#595959] dark:text-[#c8c8c1]"
-              >
-                {project.summary[locale]}
-              </p>
-            </div>
+      <div
+        data-melius-ui-id="project-detail-header"
+        className="mb-5 flex items-center justify-between gap-4 border-b border-black/[0.08] pb-4 dark:border-white/[0.10]"
+      >
+        <button
+          data-melius-ui-id="project-detail-close"
+          data-melius-ui-role="button"
+          type="button"
+          onClick={onClose}
+          className="h-9 rounded-full border border-black/[0.12] px-4 text-[11px] font-bold uppercase leading-none transition hover:bg-black/[0.04] active:scale-[0.96] dark:border-white/[0.16] dark:hover:bg-white/[0.08]"
+        >
+          {t.close}
+        </button>
+        <p className="text-[12px] font-bold uppercase leading-none text-[#858585] dark:text-[#90908b]">{project.year}</p>
+      </div>
 
-            <div className="grid gap-6">
-              <div className="grid grid-cols-2 gap-4 border-y border-black/[0.08] py-5 dark:border-white/[0.10]">
-                <div>
-                  <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
-                    {t.scope}
-                  </p>
-                  <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.meta[locale]}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
-                    {t.outcome}
-                  </p>
-                  <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.year}</p>
-                </div>
+      <div className="grid gap-8">
+        <figure className="relative overflow-hidden rounded-[8px] bg-[#e7e7e2] dark:bg-[#222229]">
+          <img
+            data-melius-ui-id="project-detail-image"
+            data-melius-ui-role="image"
+            src={project.image}
+            alt={project.alt[locale]}
+            className="aspect-[16/10] max-h-[640px] min-h-[300px] w-full object-cover md:min-h-[520px]"
+          />
+          <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/[0.52] to-transparent px-5 pb-5 pt-20 text-white">
+            <span className="text-[11px] font-bold uppercase leading-none">{project.meta[locale]}</span>
+            <span className="text-[11px] font-bold uppercase leading-none">{project.year}</span>
+          </figcaption>
+        </figure>
+
+        <div className="grid gap-9 border-b border-black/[0.08] pb-12 dark:border-white/[0.10] lg:grid-cols-[1fr_0.78fr] lg:gap-12">
+          <div>
+            <p className="text-[11px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">{t.eyebrow}</p>
+            <h1
+              id="project-detail-title"
+              data-melius-ui-id="project-detail-title"
+              className="mt-5 max-w-[720px] text-[44px] font-semibold leading-[48px] md:text-[66px] md:leading-[68px]"
+            >
+              {project.title[locale]}
+            </h1>
+            <p
+              data-melius-ui-id="project-detail-summary"
+              className="mt-6 max-w-[680px] text-[18px] leading-[27px] text-[#595959] dark:text-[#c8c8c1]"
+            >
+              {project.summary[locale]}
+            </p>
+          </div>
+
+          <div className="grid content-start gap-6">
+            <div className="grid grid-cols-2 gap-4 border-y border-black/[0.08] py-5 dark:border-white/[0.10]">
+              <div>
+                <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">{t.scope}</p>
+                <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.meta[locale]}</p>
               </div>
-              <p data-melius-ui-id="project-detail-outcome" className="max-w-[620px] text-[13px] leading-[19px] text-[#696969] dark:text-[#b8b8b2]">
-                {t.outcomeCopy}
-              </p>
-              <a
-                data-melius-ui-id="project-detail-contact"
-                data-melius-ui-role="button"
-                href="#contact"
-                onClick={onClose}
-                className="inline-flex h-11 items-center justify-center rounded-full bg-[#0f0f12] px-6 text-[14px] font-semibold leading-none text-white transition hover:bg-[#191775] active:scale-[0.98] dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white md:w-[260px]"
-              >
-                {t.contact}
-              </a>
+              <div>
+                <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">{t.outcome}</p>
+                <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.year}</p>
+              </div>
             </div>
+            <p data-melius-ui-id="project-detail-outcome" className="text-[13px] leading-[19px] text-[#696969] dark:text-[#b8b8b2]">
+              {t.outcomeCopy}
+            </p>
+            <a
+              data-melius-ui-id="project-detail-contact"
+              data-melius-ui-role="button"
+              href="#contact"
+              onClick={onContact}
+              className="inline-flex h-11 items-center justify-center rounded-full bg-[#0f0f12] px-6 text-[14px] font-semibold leading-none text-white transition hover:bg-[#191775] active:scale-[0.98] dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white md:w-[260px]"
+            >
+              {t.contact}
+            </a>
           </div>
         </div>
       </div>
@@ -644,8 +636,6 @@ export default function App() {
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projectDetailClosing, setProjectDetailClosing] = useState(false);
-  const projectDetailTimerRef = useRef<number | null>(null);
 
   const t = copy[locale];
   const testimonial = t.testimonial[testimonialIndex];
@@ -690,15 +680,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [projectDetailClosing, selectedProject]);
-
-  useEffect(() => {
-    return () => {
-      if (projectDetailTimerRef.current) {
-        window.clearTimeout(projectDetailTimerRef.current);
-      }
-    };
-  }, []);
+  }, [selectedProject]);
 
   function toggleLocale() {
     setLocale((current) => (current === 'en' ? 'ja' : 'en'));
@@ -709,44 +691,43 @@ export default function App() {
   }
 
   function openProject(project: Project) {
-    if (selectedProject?.id === project.id && !projectDetailClosing) {
-      closeProjectDetail();
-      return;
-    }
-
-    if (projectDetailTimerRef.current) {
-      window.clearTimeout(projectDetailTimerRef.current);
-      projectDetailTimerRef.current = null;
-    }
-
     runProjectViewTransition(() => {
-      setProjectDetailClosing(false);
       setSelectedProject(project);
     });
 
     window.setTimeout(() => {
-      document.getElementById(`${project.id}-detail`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      document.querySelector('[data-melius-ui-id="work-column"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }, 80);
   }
 
   function closeProjectDetail() {
-    if (!selectedProject || projectDetailClosing) {
+    if (!selectedProject) {
       return;
     }
 
-    setProjectDetailClosing(true);
+    runProjectViewTransition(() => {
+      setSelectedProject(null);
+    });
+  }
 
-    if (projectDetailTimerRef.current) {
-      window.clearTimeout(projectDetailTimerRef.current);
+  function contactFromProjectDetail(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+
+    runProjectViewTransition(() => {
+      setSelectedProject(null);
+    });
+
+    window.setTimeout(() => {
+      document.getElementById('contact')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }, 120);
+  }
+
+  function handlePrimaryContactClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!selectedProject) {
+      return;
     }
 
-    projectDetailTimerRef.current = window.setTimeout(() => {
-      runProjectViewTransition(() => {
-        setSelectedProject(null);
-        setProjectDetailClosing(false);
-      });
-      projectDetailTimerRef.current = null;
-    }, projectDetailAnimationMs);
+    contactFromProjectDetail(event);
   }
 
   return (
@@ -782,7 +763,7 @@ export default function App() {
             </div>
 
             <div data-melius-ui-id="hero-actions" className="flex flex-col items-start gap-3 xl:flex-row">
-              <ButtonLink uiId="primary-cta" href="#contact">
+              <ButtonLink uiId="primary-cta" href="#contact" onClick={handlePrimaryContactClick}>
                 {t.start}
               </ButtonLink>
               <button
@@ -843,83 +824,87 @@ export default function App() {
       <DividerLine />
 
       <MainColumn data-melius-ui-id="work-column">
-        <div className="mx-auto max-w-[1240px]">
-          <div
-            data-melius-ui-id="work-index-header"
-            className="mb-5 flex items-end justify-between gap-4 border-b border-black/[0.08] pb-4 dark:border-white/[0.10]"
-          >
-            <p className="text-[12px] font-bold uppercase leading-none text-[#595959] dark:text-[#b7b7b2]">
-              {t.workKicker}
-            </p>
-            <p className="text-[12px] font-bold uppercase leading-none text-[#858585] dark:text-[#90908b]">
-              {t.workNote}
-            </p>
-          </div>
-
-          <div data-melius-ui-id="project-gallery" className="grid gap-6">
-            {selectedProject?.id === featuredProject.id ? (
-              <ProjectDetail locale={locale} project={selectedProject} isClosing={projectDetailClosing} onClose={closeProjectDetail} />
-            ) : (
-              <FeatureWorkCard
-                uiId={featuredProject.id}
-                imageUiId={`${featuredProject.id}-image`}
-                href={`#${featuredProject.id}`}
-                aria-expanded={false}
-                aria-controls={`${featuredProject.id}-detail`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  openProject(featuredProject);
-                }}
-                image={featuredProject.image}
-                alt={featuredProject.alt[locale]}
-                title={featuredProject.title[locale]}
-                meta={featuredProject.meta[locale]}
-                year={featuredProject.year}
+        <div data-melius-ui-id="project-view">
+          {selectedProject ? (
+            <div className="mx-auto max-w-[1240px]">
+              <ProjectDetailView
+                locale={locale}
+                project={selectedProject}
+                onClose={closeProjectDetail}
+                onContact={contactFromProjectDetail}
               />
-            )}
-
-            <div data-melius-ui-id="supporting-project-grid" className="grid gap-6 sm:grid-cols-2">
-              {supportingProjects.map((project) => (
-                <Fragment key={project.id}>
-                  {selectedProject?.id === project.id ? (
-                    <div className="sm:col-span-2">
-                      <ProjectDetail locale={locale} project={selectedProject} isClosing={projectDetailClosing} onClose={closeProjectDetail} />
-                    </div>
-                  ) : (
-                    <WorkCard
-                      uiId={project.id}
-                      imageUiId={`${project.id}-image`}
-                      href={`#${project.id}`}
-                      aria-expanded={false}
-                      aria-controls={`${project.id}-detail`}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        openProject(project);
-                      }}
-                      image={project.image}
-                      alt={project.alt[locale]}
-                      title={project.title[locale]}
-                      meta={project.meta[locale]}
-                      year={project.year}
-                    />
-                  )}
-                </Fragment>
-              ))}
             </div>
-          </div>
-        </div>
+          ) : (
+            <div className="work-index-view">
+              <div className="mx-auto max-w-[1240px]">
+                <div
+                  data-melius-ui-id="work-index-header"
+                  className="mb-5 flex items-end justify-between gap-4 border-b border-black/[0.08] pb-4 dark:border-white/[0.10]"
+                >
+                  <p className="text-[12px] font-bold uppercase leading-none text-[#595959] dark:text-[#b7b7b2]">
+                    {t.workKicker}
+                  </p>
+                  <p className="text-[12px] font-bold uppercase leading-none text-[#858585] dark:text-[#90908b]">
+                    {t.workNote}
+                  </p>
+                </div>
 
-        <div className="mx-auto mt-20 max-w-[960px] md:mt-24">
-          <ContactForm locale={locale} />
+                <div data-melius-ui-id="project-gallery" className="grid gap-6">
+                  <FeatureWorkCard
+                    uiId={featuredProject.id}
+                    imageUiId={`${featuredProject.id}-image`}
+                    href={`#${featuredProject.id}`}
+                    aria-expanded={false}
+                    aria-controls={`${featuredProject.id}-detail`}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openProject(featuredProject);
+                    }}
+                    image={featuredProject.image}
+                    alt={featuredProject.alt[locale]}
+                    title={featuredProject.title[locale]}
+                    meta={featuredProject.meta[locale]}
+                    year={featuredProject.year}
+                  />
 
-          <div
-            data-melius-ui-id="footer-wordmark"
-            className="animate-soft-float flex w-full justify-center pb-12 pt-24"
-          >
-            <p className="select-none text-[68px] font-bold uppercase leading-none text-black/[0.10] dark:text-white/[0.10] sm:text-[98px] md:text-[120px]">
-              HARBOR
-            </p>
-          </div>
+                  <div data-melius-ui-id="supporting-project-grid" className="grid gap-6 sm:grid-cols-2">
+                    {supportingProjects.map((project) => (
+                      <WorkCard
+                        key={project.id}
+                        uiId={project.id}
+                        imageUiId={`${project.id}-image`}
+                        href={`#${project.id}`}
+                        aria-expanded={false}
+                        aria-controls={`${project.id}-detail`}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          openProject(project);
+                        }}
+                        image={project.image}
+                        alt={project.alt[locale]}
+                        title={project.title[locale]}
+                        meta={project.meta[locale]}
+                        year={project.year}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mx-auto mt-20 max-w-[960px] md:mt-24">
+                <ContactForm locale={locale} />
+
+                <div
+                  data-melius-ui-id="footer-wordmark"
+                  className="animate-soft-float flex w-full justify-center pb-12 pt-24"
+                >
+                  <p className="select-none text-[68px] font-bold uppercase leading-none text-black/[0.10] dark:text-white/[0.10] sm:text-[98px] md:text-[120px]">
+                    HARBOR
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </MainColumn>
 
