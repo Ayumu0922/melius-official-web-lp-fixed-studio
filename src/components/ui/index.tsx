@@ -142,7 +142,7 @@ export function ButtonLink({ uiId, variant = 'primary', children, ...props }: Bu
         {...props}
         data-melius-ui-id={uiId}
         data-melius-ui-role="button"
-        className="inline-flex min-h-[50px] w-full items-center justify-center rounded-full bg-[#595959] px-6 text-[17px] font-medium leading-none text-white transition hover:bg-[#4a4a4a] sm:w-auto dark:bg-[#d8d8d0] dark:text-[#101010] dark:hover:bg-white"
+        className="inline-flex min-h-[50px] w-full items-center justify-center rounded-full bg-[#595959] px-6 text-[17px] font-medium leading-none text-white transition hover:bg-[#4a4a4a] active:scale-[0.98] sm:w-auto dark:bg-[#d8d8d0] dark:text-[#101010] dark:hover:bg-white"
       >
         {children}
       </a>
@@ -154,7 +154,7 @@ export function ButtonLink({ uiId, variant = 'primary', children, ...props }: Bu
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="button"
-      className="group inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-full bg-[#0f0f12] px-6 text-[17px] font-medium leading-none text-white shadow-[inset_0_4px_16px_1px_rgba(255,255,255,0.22),0_2px_12px_0_rgba(0,0,0,0.20)] transition hover:bg-[#191775] sm:w-auto dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white"
+      className="group inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-full bg-[#0f0f12] px-6 text-[17px] font-medium leading-none text-white shadow-[inset_0_4px_16px_1px_rgba(255,255,255,0.22),0_2px_12px_0_rgba(0,0,0,0.20)] transition hover:bg-[#191775] active:scale-[0.98] sm:w-auto dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white"
     >
       <span>{children}</span>
       <span aria-hidden="true" className="text-[20px] leading-none transition group-hover:-rotate-45">
@@ -170,7 +170,7 @@ export function ControlButton({ uiId, children, ...props }: ControlButtonProps &
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="button"
-      className="inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-black/[0.12] bg-white/[0.62] px-3 text-[11px] font-bold uppercase leading-none text-[#0f0f12] transition hover:bg-white hover:opacity-75 dark:border-white/[0.16] dark:bg-white/[0.06] dark:text-[#f5f5f2] dark:hover:bg-white/[0.10]"
+      className="inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-black/[0.12] bg-white/[0.62] px-3 text-[11px] font-bold uppercase leading-none text-[#0f0f12] transition hover:bg-white hover:opacity-75 active:scale-[0.96] dark:border-white/[0.16] dark:bg-white/[0.06] dark:text-[#f5f5f2] dark:hover:bg-white/[0.10]"
     >
       {children}
     </button>
@@ -183,7 +183,7 @@ export function FeatureWorkCard({ uiId, imageUiId, image, alt, title, year, meta
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="card"
-      className="work-card group grid overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-[#1a1a1f] lg:grid-cols-[1.58fr_0.72fr]"
+      className="work-card group grid overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] dark:bg-[#1a1a1f] lg:grid-cols-[1.58fr_0.72fr]"
     >
       <div className="relative overflow-hidden">
         <img
@@ -221,7 +221,7 @@ export function WorkCard({ uiId, imageUiId, image, alt, title, year, meta, ...pr
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="card"
-      className="work-card group block overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-[#1a1a1f]"
+      className="work-card group block overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] dark:bg-[#1a1a1f]"
     >
       <div className="relative overflow-hidden">
         <img
@@ -315,7 +315,7 @@ export function SubmitButton({ children, ...props }: ButtonHTMLAttributes<HTMLBu
       {...props}
       data-melius-ui-id="contact-submit-button"
       data-melius-ui-role="button"
-      className="h-10 w-full rounded-full bg-[#0f0f12] px-6 text-[14px] font-semibold leading-none text-white transition hover:bg-[#1a1a21] md:w-[240px] dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white"
+      className="h-10 w-full rounded-full bg-[#0f0f12] px-6 text-[14px] font-semibold leading-none text-white transition hover:bg-[#1a1a21] active:scale-[0.98] disabled:cursor-default disabled:opacity-72 md:w-[240px] dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white"
     >
       {children}
     </button>

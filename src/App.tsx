@@ -26,6 +26,7 @@ interface Project {
   id: string;
   title: Record<Locale, string>;
   meta: Record<Locale, string>;
+  summary: Record<Locale, string>;
   year: string;
   image: string;
   alt: Record<Locale, string>;
@@ -45,6 +46,10 @@ const projects: Project[] = [
       en: 'Brand system / Web',
       ja: 'ブランド / Web',
     },
+    summary: {
+      en: 'A launch system for a technical studio, pairing a sharper product story with a calm editorial website.',
+      ja: '技術系スタジオのためのローンチシステム。プロダクトの物語と静かな編集的Webサイトを組み合わせています。',
+    },
     year: '2026',
     image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -61,6 +66,10 @@ const projects: Project[] = [
     meta: {
       en: 'Product UI',
       ja: 'プロダクトUI',
+    },
+    summary: {
+      en: 'A focused interface study for teams that need faster onboarding, cleaner navigation, and clearer status.',
+      ja: 'より速いオンボーディング、整理された導線、明快な状態表示を必要とするチーム向けのUI検討。',
     },
     year: '2025',
     image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=84',
@@ -79,6 +88,10 @@ const projects: Project[] = [
       en: 'Identity / Launch',
       ja: 'ID / ローンチ',
     },
+    summary: {
+      en: 'A compact identity refresh built around a small set of confident launch assets and reusable visual rules.',
+      ja: '少数の強いローンチ素材と再利用しやすいビジュアルルールで組んだ、コンパクトなID刷新。',
+    },
     year: '2025',
     image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -96,6 +109,10 @@ const projects: Project[] = [
       en: 'Web direction',
       ja: 'Webディレクション',
     },
+    summary: {
+      en: 'A web direction sprint for a service team that needed stronger hierarchy and a clearer consultation path.',
+      ja: '階層設計と相談導線を強めるための、サービスチーム向けWebディレクションスプリント。',
+    },
     year: '2024',
     image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=84',
     alt: {
@@ -112,6 +129,10 @@ const projects: Project[] = [
     meta: {
       en: 'Mobile concept',
       ja: 'モバイル構想',
+    },
+    summary: {
+      en: 'A mobile concept for field teams, balancing fast capture, shared context, and a lightweight review loop.',
+      ja: '現場チーム向けのモバイル構想。素早い記録、共有文脈、軽いレビュー導線を両立しています。',
     },
     year: '2024',
     image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=84',
@@ -139,6 +160,14 @@ const copy = {
     trusted: 'Trusted by product-led teams.',
     workKicker: 'Selected Work',
     workNote: '01 / 05',
+    projectPanel: {
+      eyebrow: 'Case study preview',
+      close: 'Close',
+      contact: 'Discuss this project',
+      scope: 'Scope',
+      outcome: 'Outcome',
+      outcomeCopy: 'Sample detail view only. In a generated app, this can become a full case-study route or CMS-backed project page.',
+    },
     testimonial: [
       {
         quote:
@@ -185,6 +214,8 @@ const copy = {
       budgets: ['$5k-$10k', '$10k-$20k', '$20k-$50k', '$50k+'],
       response: '12 hours typical response',
       submit: 'Submit',
+      sent: 'Request received',
+      sentNote: 'Thanks. The next step would be wired to email, CRM, or storage in the generated app.',
     },
   },
   ja: {
@@ -203,6 +234,14 @@ const copy = {
     trusted: 'プロダクト主導のチームに選ばれています。',
     workKicker: 'Selected Work',
     workNote: '01 / 05',
+    projectPanel: {
+      eyebrow: 'Case study preview',
+      close: '閉じる',
+      contact: 'この事例で相談',
+      scope: '範囲',
+      outcome: '結果',
+      outcomeCopy: 'これはサンプルの詳細表示です。生成後のアプリでは、事例ページやCMS連携のプロジェクト画面にできます。',
+    },
     testimonial: [
       {
         quote: 'プロダクトの物語が明確になり、プラットフォームの品質に見合うサイトへ整いました。',
@@ -246,6 +285,8 @@ const copy = {
       budgets: ['75万-150万円', '150万-300万円', '300万-750万円', '750万円以上'],
       response: '通常12時間以内に返信',
       submit: '送信',
+      sent: '送信済み',
+      sentNote: 'ありがとうございます。生成後のアプリではメール、CRM、保存処理へ接続できます。',
     },
   },
 };
@@ -413,9 +454,11 @@ function AboutPanel({
 
 function ContactForm({ locale }: { locale: Locale }) {
   const t = copy[locale].contact;
+  const [sent, setSent] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSent(true);
   }
 
   return (
@@ -429,7 +472,7 @@ function ContactForm({ locale }: { locale: Locale }) {
           {t.title}
         </h2>
         <p data-melius-ui-id="contact-lead" className="mt-2 text-[14px] leading-[20px] text-[#595959] dark:text-[#b7b7b2]">
-          {t.lead}
+          {sent ? t.sentNote : t.lead}
         </p>
       </div>
 
@@ -454,17 +497,120 @@ function ContactForm({ locale }: { locale: Locale }) {
         <div className="mt-3 flex flex-wrap items-center justify-between gap-5">
           <div
             data-melius-ui-id="contact-response-note"
-            className="flex items-center gap-2.5 text-[14px] leading-none text-[#595959] dark:text-[#b7b7b2]"
+            data-state={sent ? 'sent' : 'idle'}
+            className="flex items-center gap-2.5 text-[14px] leading-none text-[#595959] transition data-[state=sent]:text-[#0f0f12] dark:text-[#b7b7b2] dark:data-[state=sent]:text-[#f5f5f2]"
           >
             <span aria-hidden="true" className="grid h-5 w-5 place-items-center rounded-full border border-current text-[10px]">
-              12
+              {sent ? 'OK' : '12'}
             </span>
-            <span>{t.response}</span>
+            <span>{sent ? t.sent : t.response}</span>
           </div>
-          <SubmitButton type="submit">{t.submit}</SubmitButton>
+          <SubmitButton type="submit" disabled={sent}>
+            {sent ? t.sent : t.submit}
+          </SubmitButton>
         </div>
       </form>
     </section>
+  );
+}
+
+function ProjectPanel({
+  locale,
+  project,
+  onClose,
+}: {
+  locale: Locale;
+  project: Project | null;
+  onClose: () => void;
+}) {
+  const t = copy[locale].projectPanel;
+
+  if (!project) {
+    return null;
+  }
+
+  return (
+    <div
+      data-melius-ui-id="project-detail-panel"
+      className="fixed inset-0 z-50 grid place-items-end bg-black/[0.32] px-3 py-3 md:place-items-center md:px-6 md:py-6"
+      onClick={onClose}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-detail-title"
+        className="animate-fade-up grid max-h-[92vh] w-full max-w-[980px] overflow-hidden rounded-[8px] bg-white text-[#0f0f12] shadow-2xl shadow-black/[0.22] dark:bg-[#18181d] dark:text-[#f5f5f2] md:grid-cols-[1.1fr_0.9fr]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <img
+          data-melius-ui-id="project-detail-image"
+          data-melius-ui-role="image"
+          src={project.image}
+          alt={project.alt[locale]}
+          className="h-[280px] w-full object-cover md:h-full"
+        />
+        <div className="flex flex-col justify-between gap-10 p-6 md:p-8">
+          <div>
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-[11px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
+                {t.eyebrow}
+              </p>
+              <button
+                data-melius-ui-id="project-detail-close"
+                data-melius-ui-role="button"
+                type="button"
+                onClick={onClose}
+                className="h-9 rounded-full border border-black/[0.12] px-4 text-[11px] font-bold uppercase leading-none transition hover:bg-black/[0.04] active:scale-[0.96] dark:border-white/[0.16] dark:hover:bg-white/[0.08]"
+              >
+                {t.close}
+              </button>
+            </div>
+            <h2
+              id="project-detail-title"
+              data-melius-ui-id="project-detail-title"
+              className="mt-8 text-[34px] font-semibold leading-[38px] md:text-[42px] md:leading-[46px]"
+            >
+              {project.title[locale]}
+            </h2>
+            <p
+              data-melius-ui-id="project-detail-summary"
+              className="mt-5 text-[15px] leading-[22px] text-[#595959] dark:text-[#c8c8c1]"
+            >
+              {project.summary[locale]}
+            </p>
+          </div>
+
+          <div className="grid gap-6">
+            <div className="grid grid-cols-2 gap-4 border-y border-black/[0.08] py-5 dark:border-white/[0.10]">
+              <div>
+                <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
+                  {t.scope}
+                </p>
+                <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.meta[locale]}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
+                  {t.outcome}
+                </p>
+                <p className="mt-2 text-[14px] font-semibold leading-[19px]">{project.year}</p>
+              </div>
+            </div>
+            <p data-melius-ui-id="project-detail-outcome" className="text-[13px] leading-[19px] text-[#696969] dark:text-[#b8b8b2]">
+              {t.outcomeCopy}
+            </p>
+            <a
+              data-melius-ui-id="project-detail-contact"
+              data-melius-ui-role="button"
+              href="#contact"
+              onClick={onClose}
+              className="inline-flex h-11 items-center justify-center rounded-full bg-[#0f0f12] px-6 text-[14px] font-semibold leading-none text-white transition hover:bg-[#191775] active:scale-[0.98] dark:bg-[#f5f5f2] dark:text-[#0f0f12] dark:hover:bg-white"
+            >
+              {t.contact}
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -474,6 +620,7 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => applyTheme(readInitialThemePreference()));
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const t = copy[locale];
   const testimonial = t.testimonial[testimonialIndex];
@@ -512,6 +659,7 @@ export default function App() {
     function handleKeydown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setAboutOpen(false);
+        setSelectedProject(null);
       }
     }
 
@@ -525,6 +673,10 @@ export default function App() {
 
   function toggleTheme() {
     setThemePreference(theme === 'dark' ? 'light' : 'dark');
+  }
+
+  function openProject(project: Project) {
+    setSelectedProject(project);
   }
 
   return (
@@ -568,7 +720,7 @@ export default function App() {
                 data-melius-ui-role="button"
                 type="button"
                 onClick={() => setAboutOpen(true)}
-                className="inline-flex min-h-[50px] w-full items-center justify-center rounded-full bg-[#595959] px-6 text-[17px] font-medium leading-none text-white transition hover:bg-[#4a4a4a] sm:w-auto dark:bg-[#d8d8d0] dark:text-[#101010] dark:hover:bg-white"
+                className="inline-flex min-h-[50px] w-full items-center justify-center rounded-full bg-[#595959] px-6 text-[17px] font-medium leading-none text-white transition hover:bg-[#4a4a4a] active:scale-[0.98] sm:w-auto dark:bg-[#d8d8d0] dark:text-[#101010] dark:hover:bg-white"
               >
                 {t.about}
               </button>
@@ -638,7 +790,11 @@ export default function App() {
             <FeatureWorkCard
               uiId={featuredProject.id}
               imageUiId={`${featuredProject.id}-image`}
-              href="#contact"
+              href={`#${featuredProject.id}`}
+              onClick={(event) => {
+                event.preventDefault();
+                openProject(featuredProject);
+              }}
               image={featuredProject.image}
               alt={featuredProject.alt[locale]}
               title={featuredProject.title[locale]}
@@ -652,7 +808,11 @@ export default function App() {
                   key={project.id}
                   uiId={project.id}
                   imageUiId={`${project.id}-image`}
-                  href="#contact"
+                  href={`#${project.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    openProject(project);
+                  }}
                   image={project.image}
                   alt={project.alt[locale]}
                   title={project.title[locale]}
@@ -679,6 +839,7 @@ export default function App() {
       </MainColumn>
 
       <AboutPanel locale={locale} open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <ProjectPanel locale={locale} project={selectedProject} onClose={() => setSelectedProject(null)} />
     </PageShell>
   );
 }
