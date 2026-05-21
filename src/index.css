@@ -95,24 +95,20 @@ html[data-theme="dark"] ::selection {
 
 @keyframes projectViewOld {
   from {
-    opacity: 1;
     transform: translateY(0) scale(1);
   }
 
   to {
-    opacity: 0.92;
-    transform: translateY(-8px) scale(0.995);
+    transform: translateY(-6px) scale(0.998);
   }
 }
 
 @keyframes projectViewNew {
   from {
-    opacity: 0.9;
-    transform: translateY(10px) scale(0.997);
+    transform: translateY(8px) scale(0.998);
   }
 
   to {
-    opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
@@ -126,20 +122,52 @@ html[data-theme="dark"] ::selection {
 }
 
 [data-melius-ui-id="project-view"] {
+  min-height: calc(100vh - 40px);
+  background: #fafafa;
+  contain: layout paint;
+  isolation: isolate;
   view-transition-name: project-view;
 }
 
+html[data-theme="dark"] [data-melius-ui-id="project-view"] {
+  background: #111114;
+}
+
+::view-transition-group(project-view) {
+  animation-duration: 0.34s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-image-pair(project-view) {
+  isolation: isolate;
+}
+
+::view-transition-old(project-view),
+::view-transition-new(project-view) {
+  backface-visibility: hidden;
+  background: #fafafa;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+html[data-theme="dark"]::view-transition-old(project-view),
+html[data-theme="dark"]::view-transition-new(project-view) {
+  background: #111114;
+}
+
 ::view-transition-old(project-view) {
-  animation: projectViewOld 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: projectViewOld 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 ::view-transition-new(project-view) {
-  animation: projectViewNew 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: projectViewNew 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.work-index-view,
-.project-detail-view {
-  animation: projectViewNew 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+@supports not (view-transition-name: project-view) {
+  .work-index-view,
+  .project-detail-view {
+    animation: projectViewNew 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
 .ticker-track {
