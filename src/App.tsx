@@ -34,6 +34,7 @@ interface Project {
 
 const localeStorageKey = 'melius-official-web-lp-fixed-studio-locale';
 const themeStorageKey = 'melius-official-web-lp-fixed-studio-theme';
+const projectPanelAnimationMs = 280;
 
 const projects: Project[] = [
   {
@@ -517,10 +518,12 @@ function ContactForm({ locale }: { locale: Locale }) {
 function ProjectPanel({
   locale,
   project,
+  isClosing,
   onClose,
 }: {
   locale: Locale;
   project: Project | null;
+  isClosing: boolean;
   onClose: () => void;
 }) {
   const t = copy[locale].projectPanel;
@@ -532,24 +535,29 @@ function ProjectPanel({
   return (
     <div
       data-melius-ui-id="project-detail-panel"
-      className="fixed inset-0 z-50 grid place-items-end bg-black/[0.32] px-3 py-3 md:place-items-center md:px-6 md:py-6"
+      data-state={isClosing ? 'closing' : 'open'}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/[0.32] px-0 pt-8 data-[state=closing]:animate-sheet-backdrop-out data-[state=open]:animate-sheet-backdrop-in md:px-6 md:pt-12"
       onClick={onClose}
     >
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-detail-title"
-        className="animate-fade-up grid max-h-[92vh] w-full max-w-[980px] overflow-hidden rounded-[8px] bg-white text-[#0f0f12] shadow-2xl shadow-black/[0.22] dark:bg-[#18181d] dark:text-[#f5f5f2] md:grid-cols-[1.1fr_0.9fr]"
+        data-state={isClosing ? 'closing' : 'open'}
+        className="relative grid max-h-[88svh] w-full max-w-[1120px] overflow-hidden rounded-t-[20px] bg-white text-[#0f0f12] shadow-[0_-22px_70px_rgba(0,0,0,0.26)] data-[state=closing]:animate-bottom-sheet-out data-[state=open]:animate-bottom-sheet-in dark:bg-[#18181d] dark:text-[#f5f5f2] md:max-h-[84svh] md:grid-cols-[0.95fr_1.05fr] md:rounded-t-[24px]"
         onClick={(event) => event.stopPropagation()}
       >
+        <div aria-hidden="true" className="absolute left-0 right-0 top-3 z-10 flex justify-center">
+          <span className="h-1 w-12 rounded-full bg-black/[0.16] dark:bg-white/[0.24]" />
+        </div>
         <img
           data-melius-ui-id="project-detail-image"
           data-melius-ui-role="image"
           src={project.image}
           alt={project.alt[locale]}
-          className="h-[280px] w-full object-cover md:h-full"
+          className="h-[220px] w-full object-cover sm:h-[260px] md:h-full md:min-h-[420px]"
         />
-        <div className="flex flex-col justify-between gap-10 p-6 md:p-8">
+        <div className="flex max-h-[calc(88svh-220px)] flex-col justify-between gap-10 overflow-y-auto p-6 pt-9 sm:max-h-[calc(88svh-260px)] md:max-h-[84svh] md:p-8 md:pt-10">
           <div>
             <div className="flex items-center justify-between gap-4">
               <p className="text-[11px] font-bold uppercase leading-none text-[#858585] dark:text-[#aaa9a3]">
@@ -621,6 +629,7 @@ export default function App() {
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectPanelClosing, setProjectPanelClosing] = useState(false);
 
   const t = copy[locale];
   const testimonial = t.testimonial[testimonialIndex];
@@ -659,13 +668,13 @@ export default function App() {
     function handleKeydown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setAboutOpen(false);
-        setSelectedProject(null);
+        closeProjectPanel();
       }
     }
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, []);
+  }, [projectPanelClosing, selectedProject]);
 
   function toggleLocale() {
     setLocale((current) => (current === 'en' ? 'ja' : 'en'));
@@ -676,7 +685,20 @@ export default function App() {
   }
 
   function openProject(project: Project) {
+    setProjectPanelClosing(false);
     setSelectedProject(project);
+  }
+
+  function closeProjectPanel() {
+    if (!selectedProject || projectPanelClosing) {
+      return;
+    }
+
+    setProjectPanelClosing(true);
+    window.setTimeout(() => {
+      setSelectedProject(null);
+      setProjectPanelClosing(false);
+    }, projectPanelAnimationMs);
   }
 
   return (
@@ -839,7 +861,7 @@ export default function App() {
       </MainColumn>
 
       <AboutPanel locale={locale} open={aboutOpen} onClose={() => setAboutOpen(false)} />
-      <ProjectPanel locale={locale} project={selectedProject} onClose={() => setSelectedProject(null)} />
+      <ProjectPanel locale={locale} project={selectedProject} isClosing={projectPanelClosing} onClose={closeProjectPanel} />
     </PageShell>
   );
 }

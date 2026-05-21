@@ -93,12 +93,72 @@ html[data-theme="dark"] ::selection {
   }
 }
 
+@keyframes sheetBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheetBackdropOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes bottomSheetIn {
+  from {
+    opacity: 0.88;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bottomSheetOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0.88;
+    transform: translateY(100%);
+  }
+}
+
 .animate-fade-up {
   animation: fadeUp 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-soft-float {
   animation: softFloat 4.8s ease-in-out infinite alternate;
+}
+
+.animate-sheet-backdrop-in {
+  animation: sheetBackdropIn 0.28s ease-out both;
+}
+
+.animate-sheet-backdrop-out {
+  animation: sheetBackdropOut 0.28s ease-in both;
+}
+
+.animate-bottom-sheet-in {
+  animation: bottomSheetIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-bottom-sheet-out {
+  animation: bottomSheetOut 0.24s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 .ticker-track {
