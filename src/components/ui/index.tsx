@@ -35,7 +35,6 @@ interface WorkCardProps extends AnchorHTMLAttributes<HTMLAnchorElement>, UiIdPro
   title: string;
   year: string;
   meta: string;
-  selected?: boolean;
 }
 
 interface FieldProps extends InputHTMLAttributes<HTMLInputElement>, UiIdProps {
@@ -178,14 +177,13 @@ export function ControlButton({ uiId, children, ...props }: ControlButtonProps &
   );
 }
 
-export function FeatureWorkCard({ uiId, imageUiId, image, alt, title, year, meta, selected = false, ...props }: WorkCardProps) {
+export function FeatureWorkCard({ uiId, imageUiId, image, alt, title, year, meta, ...props }: WorkCardProps) {
   return (
     <a
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="card"
-      data-selected={selected ? 'true' : 'false'}
-      className="work-card group grid overflow-hidden rounded-[8px] border border-transparent bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] data-[selected=true]:border-black/[0.18] data-[selected=true]:bg-[#f6f6f3] data-[selected=true]:shadow-none dark:bg-[#1a1a1f] dark:data-[selected=true]:border-white/[0.22] dark:data-[selected=true]:bg-[#202025] lg:grid-cols-[1.58fr_0.72fr]"
+      className="work-card group grid overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] dark:bg-[#1a1a1f] lg:grid-cols-[1.58fr_0.72fr]"
     >
       <div className="relative overflow-hidden">
         <img
@@ -217,14 +215,13 @@ export function FeatureWorkCard({ uiId, imageUiId, image, alt, title, year, meta
   );
 }
 
-export function WorkCard({ uiId, imageUiId, image, alt, title, year, meta, selected = false, ...props }: WorkCardProps) {
+export function WorkCard({ uiId, imageUiId, image, alt, title, year, meta, ...props }: WorkCardProps) {
   return (
     <a
       {...props}
       data-melius-ui-id={uiId}
       data-melius-ui-role="card"
-      data-selected={selected ? 'true' : 'false'}
-      className="work-card group block overflow-hidden rounded-[8px] border border-transparent bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] data-[selected=true]:border-black/[0.18] data-[selected=true]:bg-[#f6f6f3] data-[selected=true]:shadow-none dark:bg-[#1a1a1f] dark:data-[selected=true]:border-white/[0.22] dark:data-[selected=true]:bg-[#202025]"
+      className="work-card group block overflow-hidden rounded-[8px] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.995] dark:bg-[#1a1a1f]"
     >
       <div className="relative overflow-hidden">
         <img

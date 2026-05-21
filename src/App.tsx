@@ -838,52 +838,51 @@ export default function App() {
           </div>
 
           <div data-melius-ui-id="project-gallery" className="grid gap-6">
-            <FeatureWorkCard
-              uiId={featuredProject.id}
-              imageUiId={`${featuredProject.id}-image`}
-              href={`#${featuredProject.id}`}
-              aria-expanded={selectedProject?.id === featuredProject.id}
-              aria-controls={`${featuredProject.id}-detail`}
-              selected={selectedProject?.id === featuredProject.id}
-              onClick={(event) => {
-                event.preventDefault();
-                openProject(featuredProject);
-              }}
-              image={featuredProject.image}
-              alt={featuredProject.alt[locale]}
-              title={featuredProject.title[locale]}
-              meta={featuredProject.meta[locale]}
-              year={featuredProject.year}
-            />
-
-            {selectedProject?.id === featuredProject.id && (
+            {selectedProject?.id === featuredProject.id ? (
               <ProjectDetail locale={locale} project={selectedProject} isClosing={projectDetailClosing} onClose={closeProjectDetail} />
+            ) : (
+              <FeatureWorkCard
+                uiId={featuredProject.id}
+                imageUiId={`${featuredProject.id}-image`}
+                href={`#${featuredProject.id}`}
+                aria-expanded={false}
+                aria-controls={`${featuredProject.id}-detail`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  openProject(featuredProject);
+                }}
+                image={featuredProject.image}
+                alt={featuredProject.alt[locale]}
+                title={featuredProject.title[locale]}
+                meta={featuredProject.meta[locale]}
+                year={featuredProject.year}
+              />
             )}
 
             <div data-melius-ui-id="supporting-project-grid" className="grid gap-6 sm:grid-cols-2">
               {supportingProjects.map((project) => (
                 <Fragment key={project.id}>
-                  <WorkCard
-                    uiId={project.id}
-                    imageUiId={`${project.id}-image`}
-                    href={`#${project.id}`}
-                    aria-expanded={selectedProject?.id === project.id}
-                    aria-controls={`${project.id}-detail`}
-                    selected={selectedProject?.id === project.id}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      openProject(project);
-                    }}
-                    image={project.image}
-                    alt={project.alt[locale]}
-                    title={project.title[locale]}
-                    meta={project.meta[locale]}
-                    year={project.year}
-                  />
-                  {selectedProject?.id === project.id && (
+                  {selectedProject?.id === project.id ? (
                     <div className="sm:col-span-2">
                       <ProjectDetail locale={locale} project={selectedProject} isClosing={projectDetailClosing} onClose={closeProjectDetail} />
                     </div>
+                  ) : (
+                    <WorkCard
+                      uiId={project.id}
+                      imageUiId={`${project.id}-image`}
+                      href={`#${project.id}`}
+                      aria-expanded={false}
+                      aria-controls={`${project.id}-detail`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        openProject(project);
+                      }}
+                      image={project.image}
+                      alt={project.alt[locale]}
+                      title={project.title[locale]}
+                      meta={project.meta[locale]}
+                      year={project.year}
+                    />
                   )}
                 </Fragment>
               ))}
