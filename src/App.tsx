@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { flushSync } from 'react-dom';
 import {
   ButtonLink,
   ControlButton,
@@ -35,6 +36,20 @@ interface Project {
 const localeStorageKey = 'melius-official-web-lp-fixed-studio-locale';
 const themeStorageKey = 'melius-official-web-lp-fixed-studio-theme';
 const projectDetailAnimationMs = 320;
+
+function runProjectViewTransition(update: () => void) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canStartViewTransition = 'startViewTransition' in document && typeof document.startViewTransition === 'function';
+
+  if (!canStartViewTransition || prefersReducedMotion) {
+    update();
+    return;
+  }
+
+  document.startViewTransition(() => {
+    flushSync(update);
+  });
+}
 
 const projects: Project[] = [
   {
@@ -704,8 +719,10 @@ export default function App() {
       projectDetailTimerRef.current = null;
     }
 
-    setProjectDetailClosing(false);
-    setSelectedProject(project);
+    runProjectViewTransition(() => {
+      setProjectDetailClosing(false);
+      setSelectedProject(project);
+    });
 
     window.setTimeout(() => {
       document.getElementById(`${project.id}-detail`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -724,8 +741,10 @@ export default function App() {
     }
 
     projectDetailTimerRef.current = window.setTimeout(() => {
-      setSelectedProject(null);
-      setProjectDetailClosing(false);
+      runProjectViewTransition(() => {
+        setSelectedProject(null);
+        setProjectDetailClosing(false);
+      });
       projectDetailTimerRef.current = null;
     }, projectDetailAnimationMs);
   }
