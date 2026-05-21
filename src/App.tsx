@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent, MouseEvent } from 'react';
-import { flushSync } from 'react-dom';
 import {
   ButtonLink,
   ControlButton,
@@ -35,20 +34,7 @@ interface Project {
 
 const localeStorageKey = 'melius-official-web-lp-fixed-studio-locale';
 const themeStorageKey = 'melius-official-web-lp-fixed-studio-theme';
-
-function runProjectViewTransition(update: () => void) {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canStartViewTransition = 'startViewTransition' in document && typeof document.startViewTransition === 'function';
-
-  if (!canStartViewTransition || prefersReducedMotion) {
-    update();
-    return;
-  }
-
-  document.startViewTransition(() => {
-    flushSync(update);
-  });
-}
+const projectPathPrefix = '/projects/';
 
 const projects: Project[] = [
   {
@@ -157,6 +143,33 @@ const projects: Project[] = [
     },
   },
 ];
+
+function findProjectById(projectId: string | null) {
+  if (!projectId) {
+    return null;
+  }
+
+  return projects.find((project) => project.id === projectId) ?? null;
+}
+
+function readProjectFromLocation() {
+  const path = window.location.pathname.replace(/\/+$/, '');
+
+  if (!path.startsWith(projectPathPrefix)) {
+    return null;
+  }
+
+  const projectId = decodeURIComponent(path.slice(projectPathPrefix.length));
+  return findProjectById(projectId);
+}
+
+function workIndexHref(hash = '') {
+  return `/${window.location.search}${hash}`;
+}
+
+function projectHref(projectId: string) {
+  return `${projectPathPrefix}${encodeURIComponent(projectId)}${window.location.search}`;
+}
 
 const copy = {
   en: {
@@ -635,7 +648,7 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => applyTheme(readInitialThemePreference()));
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(readProjectFromLocation);
 
   const t = copy[locale];
   const testimonial = t.testimonial[testimonialIndex];
@@ -682,6 +695,15 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeydown);
   }, [selectedProject]);
 
+  useEffect(() => {
+    function handlePopState() {
+      setSelectedProject(readProjectFromLocation());
+    }
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   function toggleLocale() {
     setLocale((current) => (current === 'en' ? 'ja' : 'en'));
   }
@@ -691,9 +713,8 @@ export default function App() {
   }
 
   function openProject(project: Project) {
-    runProjectViewTransition(() => {
-      setSelectedProject(project);
-    });
+    window.history.pushState({ projectId: project.id }, '', projectHref(project.id));
+    setSelectedProject(project);
 
     window.setTimeout(() => {
       document.querySelector('[data-melius-ui-id="work-column"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -705,17 +726,15 @@ export default function App() {
       return;
     }
 
-    runProjectViewTransition(() => {
-      setSelectedProject(null);
-    });
+    window.history.pushState({ view: 'work-index' }, '', workIndexHref());
+    setSelectedProject(null);
   }
 
   function contactFromProjectDetail(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
 
-    runProjectViewTransition(() => {
-      setSelectedProject(null);
-    });
+    window.history.pushState({ view: 'contact' }, '', workIndexHref('#contact'));
+    setSelectedProject(null);
 
     window.setTimeout(() => {
       document.getElementById('contact')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -853,7 +872,7 @@ export default function App() {
                   <FeatureWorkCard
                     uiId={featuredProject.id}
                     imageUiId={`${featuredProject.id}-image`}
-                    href={`#${featuredProject.id}`}
+                    href={projectHref(featuredProject.id)}
                     aria-expanded={false}
                     aria-controls={`${featuredProject.id}-detail`}
                     onClick={(event) => {
@@ -873,7 +892,7 @@ export default function App() {
                         key={project.id}
                         uiId={project.id}
                         imageUiId={`${project.id}-image`}
-                        href={`#${project.id}`}
+                        href={projectHref(project.id)}
                         aria-expanded={false}
                         aria-controls={`${project.id}-detail`}
                         onClick={(event) => {
